@@ -103,3 +103,112 @@
         </button>
     </a>
 </section>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Tech Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            display: none;
+            background: #6a0dad;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        #chatbot-header {
+            background: #4b0d8a;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        #chatbot-messages {
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            background: white;
+            color: black;
+        }
+        #chatbot-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        #chatbot-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #6a0dad;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button id="chatbot-button">💬</button>
+    <div id="chatbot-container">
+        <div id="chatbot-header" onclick="toggleChat()">Asistente Virtual</div>
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)">
+    </div>
+
+    <script>
+        document.getElementById("chatbot-button").addEventListener("click", function() {
+            document.getElementById("chatbot-container").style.display = "block";
+            this.style.display = "none";
+        });
+
+        function toggleChat() {
+            document.getElementById("chatbot-container").style.display = "none";
+            document.getElementById("chatbot-button").style.display = "block";
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            let input = document.getElementById("chatbot-input").value;
+            if (input.trim() === "") return;
+            let chatbox = document.getElementById("chatbot-messages");
+            chatbox.innerHTML += `<p><strong>Tú:</strong> ${input}</p>`;
+            document.getElementById("chatbot-input").value = "";
+            
+            let response = getResponse(input.toLowerCase());
+            setTimeout(() => {
+                chatbox.innerHTML += `<p><strong>Bot:</strong> ${response}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }, 1000);
+        }
+
+        function getResponse(message) {
+            if (message.includes("curso")) {
+                return "El curso de reparación de PC cuesta 12,000 pesos argentinos. Puedes pagar con Mercado Pago.";
+            } else if (message.includes("pago")) {
+                return "Puedes realizar el pago a través de Mercado Pago en este enlace: <a href='https://mpago.la/1bTLEWb' target='_blank'>Pagar ahora</a>.";
+            } else if (message.includes("formulario")) {
+                return "Para inscribirte, completa este formulario: <a href='https://forms.gle/9Gu4faXN8TynCqfY9' target='_blank'>Formulario</a>.";
+            } else if (message.includes("whatsapp")) {
+                return "Puedes contactarnos por WhatsApp aquí: <a href='https://wa.me/541162717977' target='_blank'>Enviar mensaje</a>.";
+            } else {
+                return "Lo siento, no entendí tu pregunta. ¿Puedes reformularla?";
+            }
+        }
+    </script>
+</body>
+</html>
