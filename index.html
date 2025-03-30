@@ -5,112 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academia Tech Z</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #fff;
-            text-align: center;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
         header {
             background-color: #6a0dad;
-            padding: 20px;
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin: 0;
         }
         section {
-            max-width: 800px;
-            margin: 20px auto;
-            background: #111;
-            padding: 20px;
+            padding: 40px;
+            background-color: #fff;
+            margin: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(106, 13, 173, 0.8);
         }
-        a {
+        section h2 {
             color: #6a0dad;
-            text-decoration: none;
-            font-weight: bold;
+            font-size: 2em;
         }
-        .contacto, .precio, .pago {
-            margin-top: 20px;
+        section p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #333;
         }
-        input, textarea, button {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: none;
-            border-radius: 5px;
-        }
-        button {
+        .cta-button {
             background-color: #6a0dad;
             color: white;
-            cursor: pointer;
+            padding: 15px 30px;
             font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            cursor: pointer;
         }
-        .curso-imagen, .imagen-reparacion {
-            width: 100%;
+        .cta-button:hover {
+            background-color: #4b0d8a;
+        }
+        .testimonial {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+        }
+        .testimonial div {
+            width: 30%;
+            padding: 20px;
+            background-color: #f5f5f5;
             border-radius: 10px;
-            margin-bottom: 15px;
+            text-align: center;
         }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Academia Tech Z</h1>
-    </header>
-    <section>
-        <h2>Aprende a ensamblar y reparar computadoras</h2>
-        <img src="https://wallpapers.com/images/hd/violet-neon-light-computer-keyboard-6ve83pfigdkia5fr.jpg" alt="Curso de Reparación de PC" class="curso-imagen">
-        <p>Conviértete en un experto en hardware con nuestro curso completo. Ideal para principiantes y avanzados.</p>
-        <p>Única inversión de <strong>$12,000 ARS</strong></p>
-        
-        <img src="https://thumbs.dreamstime.com/b/juegos-de-ordenador-pc-interior-con-piezas-reparaci%C3%B3n-luz-ne%C3%B3n-concepto-ram-imagen-representaci%C3%B3n-d-267002157.jpg" alt="Reparación de computadora" class="imagen-reparacion">
-        <img src=https://drive.google.com/file/d/1lvwdpMcgqu8u_poBWvSlRc-tyrbahDwr/view?usp=sharing" alt="Técnico reparando computadora" class="imagen-reparacion">
-    </section>
-    <section class="pago">
-        <h2>Accede al curso</h2>
-        <p>Haz tu pago ahora y comienza tu formación.</p>
-        <a href="https://mpago.la/1bTLEWb" target="_blank">
-            <button>Pagar con Mercado Pago</button>
-        </a>
-    </section>
-    <section class="contacto">
-        <h2>Contacto</h2>
-        <p>Para dudas, comunícate por <a href="https://wa.me/541162717977" target="_blank">WhatsApp</a></p>
-    </section>
-</body>
-</html>
-<section>
-    <h2>Video del Curso</h2>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/mGoriRhTXV4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</section>
-<section>
-    <h2>Obtén acceso al curso completo</h2>
-    <p>Para acceder al curso, completa el formulario a continuación y luego te enviaremos el curso completo por WhatsApp.</p>
-    
-    <!-- Botón que lleva al formulario de Google -->
-    <a href="https://forms.gle/9Gu4faXN8TynCqfY9"_blank">
-        <button style="background-color: #6a0dad; color: white; padding: 15px 30px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
-            Completar formulario
-        </button>
-    </a>
-
-    <p>Una vez completado el formulario, te contactaremos por WhatsApp.</p>
-
-    <!-- Botón para enviar mensaje por WhatsApp -->
-    <a href="https://wa.me/541162717977?text=Hola,%20me%20interesa%20el%20curso%20de%20reparación%20de%20PC." target="_blank">
-        <button style="background-color: #25d366; color: white; padding: 15px 30px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
-            Contactar por WhatsApp
-        </button>
-    </a>
-</section>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academia Tech Z</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
+        .testimonial div p {
+            font-style: italic;
+        }
         #chatbot-container {
             position: fixed;
             bottom: 20px;
@@ -158,6 +108,48 @@
     </style>
 </head>
 <body>
+    <header>
+        <h1>Bienvenido a Academia Tech Z</h1>
+        <p>Aprende reparación de PC desde cero y mejora tus habilidades profesionales</p>
+    </header>
+
+    <section>
+        <h2>¿Por qué elegir nuestro curso?</h2>
+        <p>En Academia Tech Z, ofrecemos un curso completo y accesible para que puedas aprender reparación de computadoras a tu propio ritmo. Desde el diagnóstico de fallos hasta el armado y mantenimiento de PCs, te enseñamos todo lo necesario para convertirte en un experto. Además, tenemos una única inversión de 12,000 pesos argentinos, sin cuotas ni pagos adicionales.</p>
+        <a href="https://mpago.la/1bTLEWb" class="cta-button" target="_blank">Paga ahora y empieza tu curso</a>
+    </section>
+
+    <section>
+        <h2>Testimonios de nuestros estudiantes</h2>
+        <div class="testimonial">
+            <div>
+                <h3>Juan Pérez</h3>
+                <p>"Gracias a este curso, ahora tengo mi propio taller de reparación de PCs. Las clases son muy claras y me ayudaron a conseguir trabajo rápido."</p>
+            </div>
+            <div>
+                <h3>Laura González</h3>
+                <p>"Nunca pensé que podría aprender reparación de computadoras, pero con este curso me sentí segura y guiada en todo momento. ¡Totalmente recomendable!"</p>
+            </div>
+            <div>
+                <h3>Mario Rodríguez</h3>
+                <p>"La mejor inversión que pude hacer. Ahora estoy trabajando como freelance reparando PCs gracias a los conocimientos adquiridos."</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>¿Listo para empezar?</h2>
+        <p>Completa el formulario de inscripción y comienza tu viaje para convertirte en un experto en reparación de PC. ¡No pierdas esta oportunidad!</p>
+        <a href="https://forms.gle/TU_ENLACE_DEL_FORMULARIO" class="cta-button" target="_blank">Completar Formulario</a>
+    </section>
+
+    <section>
+        <h2>Contáctanos</h2>
+        <p>Si tienes alguna duda o necesitas más información, no dudes en ponerte en contacto con nosotros a través de WhatsApp. ¡Estamos para ayudarte!</p>
+        <a href="https://wa.me/541162717977" class="cta-button" target="_blank">Enviar mensaje por WhatsApp</a>
+    </section>
+
+    <!-- Asistente Virtual -->
     <button id="chatbot-button">💬</button>
     <div id="chatbot-container">
         <div id="chatbot-header" onclick="toggleChat()">Asistente Virtual</div>
@@ -202,7 +194,7 @@
             } else if (message.includes("pago")) {
                 return "Puedes realizar el pago a través de Mercado Pago en este enlace: <a href='https://mpago.la/1bTLEWb' target='_blank'>Pagar ahora</a>.";
             } else if (message.includes("formulario")) {
-                return "Para inscribirte, completa este formulario: <a href='https://forms.gle/9Gu4faXN8TynCqfY9' target='_blank'>Formulario</a>.";
+                return "Para inscribirte, completa este formulario: <a href='https://forms.gle/TU_ENLACE_DEL_FORMULARIO' target='_blank'>Formulario</a>.";
             } else if (message.includes("whatsapp")) {
                 return "Puedes contactarnos por WhatsApp aquí: <a href='https://wa.me/541162717977' target='_blank'>Enviar mensaje</a>.";
             } else {
