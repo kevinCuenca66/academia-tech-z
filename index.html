@@ -12,6 +12,7 @@
             background-color: #000;
             color: white;
             text-align: center;
+            position: relative;
         }
         .container {
             max-width: 400px;
@@ -35,6 +36,20 @@
         #contenido {
             display: none;
             padding: 50px;
+        }
+        
+        /* Estilo para la mascota virtual (Gato Negro) */
+        #mascota {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            bottom: 20px;
+            left: 20px;
+            background-image: url('https://images.vexels.com/media/users/3/291333/isolated/preview/9bfb5cba71105268a6a1d7e156701259-dibujos-animados-lindo-gato-negro.png'); /* Reemplaza con la URL de tu imagen */
+            background-size: cover;
+            z-index: 1000;
+            pointer-events: none;
+            transition: all 0.1s ease-in-out;
         }
     </style>
 </head>
@@ -62,6 +77,9 @@
             <button>Pagar Curso - $12000 ARS</button>
         </a>
     </div>
+    
+    <!-- Mascota Virtual -->
+    <div id="mascota"></div>
 
     <script>
         function mostrarRegistro() {
@@ -96,6 +114,15 @@
                 alert("Usuario o contraseña incorrectos");
             }
         }
+
+        // Mover la mascota con el cursor
+        let mascota = document.getElementById('mascota');
+        document.addEventListener('mousemove', function(e) {
+            let mouseX = e.pageX;
+            let mouseY = e.pageY;
+            mascota.style.left = (mouseX - 50) + 'px';
+            mascota.style.top = (mouseY - 50) + 'px';
+        });
     </script>
 </body>
 </html>
