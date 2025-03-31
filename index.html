@@ -3,202 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academia Tech Z</title>
+    <title>Academia Tech Z - Iniciar Sesión</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-        header {
-            background-color: #6a0dad;
-            color: white;
-            text-align: center;
-            padding: 40px 0;
-        }
-        header h1 {
-            font-size: 2.5em;
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
-        }
-        section {
-            padding: 40px;
-            background-color: #fff;
-            margin: 20px;
-            border-radius: 10px;
-        }
-        section h2 {
-            color: #6a0dad;
-            font-size: 2em;
-        }
-        section p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #333;
-        }
-        .cta-button {
-            background-color: #6a0dad;
+            padding: 0;
+            background-color: #000;
             color: white;
-            padding: 15px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        .cta-button:hover {
-            background-color: #4b0d8a;
-        }
-        .testimonial {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 40px;
-        }
-        .testimonial div {
-            width: 30%;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 10px;
             text-align: center;
         }
-        .testimonial div p {
-            font-style: italic;
-        }
-        #chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            display: none;
+        .container {
+            max-width: 400px;
+            margin: 100px auto;
             background: #6a0dad;
-            color: white;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
-        #chatbot-header {
-            background: #4b0d8a;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-        #chatbot-messages {
-            padding: 10px;
-            height: 200px;
-            overflow-y: auto;
-            background: white;
-            color: black;
-        }
-        #chatbot-input {
+        input, button {
             width: 100%;
             padding: 10px;
+            margin: 10px 0;
             border: none;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+            border-radius: 5px;
         }
-        #chatbot-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #6a0dad;
+        button {
+            background: black;
             color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 50%;
             cursor: pointer;
+        }
+        #contenido {
+            display: none;
+            padding: 50px;
         }
     </style>
 </head>
 <body>
-    <header>
+    <div id="login" class="container">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Entrar</button>
+        <p>¿No tienes cuenta? <a href="#" onclick="mostrarRegistro()">Regístrate</a></p>
+    </div>
+    
+    <div id="registro" class="container" style="display: none;">
+        <h2>Registro</h2>
+        <input type="text" id="newUsername" placeholder="Elige un usuario">
+        <input type="password" id="newPassword" placeholder="Elige una contraseña">
+        <button onclick="registrar()">Registrar</button>
+        <p>¿Ya tienes cuenta? <a href="#" onclick="mostrarLogin()">Inicia sesión</a></p>
+    </div>
+    
+    <div id="contenido">
         <h1>Bienvenido a Academia Tech Z</h1>
-        <p>Aprende reparación de PC desde cero y mejora tus habilidades profesionales</p>
-    </header>
-
-    <section>
-        <h2>¿Por qué elegir nuestro curso?</h2>
-        <p>En Academia Tech Z, ofrecemos un curso completo y accesible para que puedas aprender reparación de computadoras a tu propio ritmo. Desde el diagnóstico de fallos hasta el armado y mantenimiento de PCs, te enseñamos todo lo necesario para convertirte en un experto. Además, tenemos una única inversión de 12,000 pesos argentinos, sin cuotas ni pagos adicionales.</p>
-        <a href="https://mpago.la/1bTLEWb" class="cta-button" target="_blank">Paga ahora y empieza tu curso</a>
-    </section>
-
-    <section>
-        <h2>Testimonios de nuestros estudiantes</h2>
-        <div class="testimonial">
-            <div>
-                <h3>Juan Pérez</h3>
-                <p>"Gracias a este curso, ahora tengo mi propio taller de reparación de PCs. Las clases son muy claras y me ayudaron a conseguir trabajo rápido."</p>
-            </div>
-            <div>
-                <h3>Laura González</h3>
-                <p>"Nunca pensé que podría aprender reparación de computadoras, pero con este curso me sentí segura y guiada en todo momento. ¡Totalmente recomendable!"</p>
-            </div>
-            <div>
-                <h3>Mario Rodríguez</h3>
-                <p>"La mejor inversión que pude hacer. Ahora estoy trabajando como freelance reparando PCs gracias a los conocimientos adquiridos."</p>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <h2>¿Listo para empezar?</h2>
-        <p>Completa el formulario de inscripción y comienza tu viaje para convertirte en un experto en reparación de PC. ¡No pierdas esta oportunidad!</p>
-        <a href="https://forms.gle/TU_ENLACE_DEL_FORMULARIO" class="cta-button" target="_blank">Completar Formulario</a>
-    </section>
-
-    <section>
-        <h2>Contáctanos</h2>
-        <p>Si tienes alguna duda o necesitas más información, no dudes en ponerte en contacto con nosotros a través de WhatsApp. ¡Estamos para ayudarte!</p>
-        <a href="https://wa.me/541162717977" class="cta-button" target="_blank">Enviar mensaje por WhatsApp</a>
-    </section>
-
-    <!-- Asistente Virtual -->
-    <button id="chatbot-button">💬</button>
-    <div id="chatbot-container">
-        <div id="chatbot-header" onclick="toggleChat()">Asistente Virtual</div>
-        <div id="chatbot-messages"></div>
-        <input type="text" id="chatbot-input" placeholder="Escribe tu pregunta..." onkeypress="handleKeyPress(event)">
+        <p>Aprende reparación de PC desde cero y mejora tus habilidades.</p>
+        <a href="https://mpago.la/1bTLEWb" target="_blank">
+            <button>Pagar Curso - $12000 ARS</button>
+        </a>
     </div>
 
     <script>
-        document.getElementById("chatbot-button").addEventListener("click", function() {
-            document.getElementById("chatbot-container").style.display = "block";
-            this.style.display = "none";
-        });
-
-        function toggleChat() {
-            document.getElementById("chatbot-container").style.display = "none";
-            document.getElementById("chatbot-button").style.display = "block";
+        function mostrarRegistro() {
+            document.getElementById("login").style.display = "none";
+            document.getElementById("registro").style.display = "block";
         }
 
-        function handleKeyPress(event) {
-            if (event.key === "Enter") {
-                sendMessage();
+        function mostrarLogin() {
+            document.getElementById("registro").style.display = "none";
+            document.getElementById("login").style.display = "block";
+        }
+
+        function registrar() {
+            let newUser = document.getElementById("newUsername").value;
+            let newPass = document.getElementById("newPassword").value;
+            if (newUser && newPass) {
+                localStorage.setItem(newUser, newPass);
+                alert("Registro exitoso, ahora inicia sesión");
+                mostrarLogin();
+            } else {
+                alert("Completa todos los campos");
             }
         }
 
-        function sendMessage() {
-            let input = document.getElementById("chatbot-input").value;
-            if (input.trim() === "") return;
-            let chatbox = document.getElementById("chatbot-messages");
-            chatbox.innerHTML += `<p><strong>Tú:</strong> ${input}</p>`;
-            document.getElementById("chatbot-input").value = "";
-            
-            let response = getResponse(input.toLowerCase());
-            setTimeout(() => {
-                chatbox.innerHTML += `<p><strong>Bot:</strong> ${response}</p>`;
-                chatbox.scrollTop = chatbox.scrollHeight;
-            }, 1000);
-        }
-
-        function getResponse(message) {
-            if (message.includes("curso")) {
-                return "El curso de reparación de PC cuesta 12,000 pesos argentinos. Puedes pagar con Mercado Pago.";
-            } else if (message.includes("pago")) {
-                return "Puedes realizar el pago a través de Mercado Pago en este enlace: <a href='https://mpago.la/1bTLEWb' target='_blank'>Pagar ahora</a>.";
-            } else if (message.includes("formulario")) {
-                return "Para inscribirte, completa este formulario: <a href='https://forms.gle/TU_ENLACE_DEL_FORMULARIO' target='_blank'>Formulario</a>.";
-            } else if (message.includes("whatsapp")) {
-                return "Puedes contactarnos por WhatsApp aquí: <a href='https://wa.me/541162717977' target='_blank'>Enviar mensaje</a>.";
+        function login() {
+            let user = document.getElementById("username").value;
+            let pass = document.getElementById("password").value;
+            if (localStorage.getItem(user) === pass) {
+                document.getElementById("login").style.display = "none";
+                document.getElementById("contenido").style.display = "block";
             } else {
-                return "Lo siento, no entendí tu pregunta. ¿Puedes reformularla?";
+                alert("Usuario o contraseña incorrectos");
             }
         }
     </script>
