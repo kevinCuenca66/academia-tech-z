@@ -1,136 +1,305 @@
+<!--
+Proyecto: Academia Tech Z - Login + Pago con Mercado Pago + Desbloqueo automático
+Arquitectura recomendada:
+- Frontend estático (puede estar en GitHub Pages o Vercel)
+- Backend con funciones serverless (Vercel) para: crear preferencia de pago y recibir webhook
+- Autenticación & estado de pago: Supabase (gratuito, fácil). 
+
+Archivos del proyecto (en un mismo repo GitHub):
+- /index.html                 -> Frontend
+- /api/create-preference.js   -> Función serverless (Vercel) para crear pago
+- /api/mp-webhook.js          -> Función serverless (Vercel) que recibe el webhook y habilita acceso
+
+Variables de entorno necesarias (en Vercel):
+- MP_ACCESS_TOKEN           -> Access token de Mercado Pago (producción o sandbox)
+- SUPABASE_URL              -> URL del proyecto Supabase
+- SUPABASE_SERVICE_ROLE_KEY -> Service Role Key (secreto, para actualizar metadata del usuario)
+- PUBLIC_SUPABASE_URL       -> (opcional) misma URL para el frontend
+- PUBLIC_SUPABASE_ANON_KEY  -> (opcional) anon key para el frontend
+
+En Supabase:
+- Habilitar Auth con email+password.
+- Usaremos user_metadata.paid = true/false para bloquear/desbloquear el curso.
+-->
+
+<!-- ========================= index.html ========================= -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Academia Tech Z</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academia Tech Z - Curso de Reparación de PC</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #1a001f, #0d0d0d);
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      padding: 20px;
-      background-color: #3d0066;
-      font-size: 26px;
-      font-weight: bold;
-    }
-    .container {
-      margin: 30px auto;
-      width: 90%;
-      max-width: 800px;
-      background: rgba(0,0,0,0.7);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px #660099;
-    }
-    input, button {
-      padding: 10px;
-      margin: 8px;
-      border-radius: 8px;
-      border: none;
-    }
-    button {
-      background: #660099;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      background: #9900cc;
-    }
-    iframe {
-      margin-top: 15px;
-      border-radius: 8px;
-    }
-    .hidden {
-      display: none;
-    }
-    img {
-      max-width: 100%;
-      margin-top: 15px;
-      border-radius: 8px;
-    }
-    a {
-      color: #ff66ff;
-      text-decoration: none;
-      font-weight: bold;
-    }
+    :root { --violeta:#6a00ff; --violeta2:#8a2be2; --negro:#0b0b0b; --gris:#151515; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:system-ui, Arial, sans-serif; background: linear-gradient(180deg, #160026 0%, #000 100%); color:#fff; }
+    header { background:#1f0036; border-bottom:1px solid #3b0a7a; padding:16px; text-align:center; position:sticky; top:0; z-index:10; }
+    header h1 { margin:0; font-size:24px; letter-spacing:0.5px; }
+
+    .wrap { max-width:1000px; margin:24px auto; padding:0 16px; }
+    .card { background:#0f0f10cc; border:1px solid #3b0a7a80; border-radius:14px; padding:20px; box-shadow:0 0 24px #6a00ff22; }
+    .grid { display:grid; gap:16px; }
+
+    .btn { background:var(--violeta); color:#fff; border:none; padding:12px 16px; border-radius:10px; cursor:pointer; font-weight:700; }
+    .btn:hover { background:var(--violeta2); }
+    .btn.outline { background:transparent; border:1px solid var(--violeta); }
+
+    .row { display:flex; gap:12px; flex-wrap:wrap; }
+    input[type="email"],input[type="password"],input[type="text"]{ width:100%; background:#0b0b0b; color:#fff; border:1px solid #333; border-radius:10px; padding:12px; }
+
+    .hidden { display:none !important; }
+    .center { text-align:center; }
+    .muted { color:#cfc; opacity:.75; }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#24004a; border:1px solid #3b0a7a; font-size:12px; }
+
+    .gallery { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .gallery img { width:100%; border-radius:10px; border:1px solid #2a2a2a; }
+
+    footer { opacity:.8; padding:24px; text-align:center; font-size:14px; }
   </style>
 </head>
 <body>
-  <header>Academia Tech Z</header>
+  <header>
+    <h1>Academia Tech Z · Reparación de PC</h1>
+  </header>
 
-  <!-- Adelanto del curso -->
-  <div class="container" id="preview">
-    <h2>Adelanto del Curso de Reparación de PC 💻</h2>
-    <p>Descubre cómo será tu experiencia en Academia Tech Z. Aquí tienes una vista previa:</p>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/mGoriRhTXV4" 
-      frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-    </iframe>
-    <p><small>Regístrate o inicia sesión para acceder al curso completo.</small></p>
-  </div>
+  <main class="wrap grid" id="app">
+    <!-- Adelanto visible para todos -->
+    <section class="card" id="preview">
+      <h2 class="center">Adelanto del curso</h2>
+      <p class="center muted">Mirá una muestra antes de registrarte o iniciar sesión.</p>
+      <div class="center">
+        <iframe width="560" height="315" style="max-width:100%" src="https://www.youtube.com/embed/mGoriRhTXV4" title="Adelanto" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </section>
 
-  <!-- Login / Registro -->
-  <div class="container" id="login-section">
-    <h2>Inicia Sesión</h2>
-    <input type="text" id="loginUser" placeholder="Usuario"><br>
-    <input type="password" id="loginPass" placeholder="Contraseña"><br>
-    <button onclick="login()">Entrar</button>
+    <!-- Auth: Login / Registro -->
+    <section class="card" id="auth-card">
+      <h2 class="center">Ingresá a tu cuenta</h2>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
+        <div>
+          <span class="badge">Iniciar sesión</span>
+          <div class="grid" style="margin-top:8px;">
+            <input id="login-email" type="email" placeholder="Email" />
+            <input id="login-pass" type="password" placeholder="Contraseña" />
+            <button class="btn" id="btn-login">Entrar</button>
+          </div>
+        </div>
+        <div>
+          <span class="badge">Crear cuenta</span>
+          <div class="grid" style="margin-top:8px;">
+            <input id="reg-email" type="email" placeholder="Email" />
+            <input id="reg-pass" type="password" placeholder="Contraseña (mín. 6)" />
+            <button class="btn outline" id="btn-register">Registrarme</button>
+          </div>
+        </div>
+      </div>
+      <p class="center muted" id="auth-msg"></p>
+    </section>
 
-    <h3>¿No tienes cuenta?</h3>
-    <input type="text" id="registerUser" placeholder="Nuevo usuario"><br>
-    <input type="password" id="registerPass" placeholder="Nueva contraseña"><br>
-    <button onclick="register()">Registrarse</button>
-  </div>
+    <!-- Contenido del curso (bloqueado si no pagó) -->
+    <section class="card hidden" id="course">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h2 style="margin:0">Curso completo</h2>
+        <div>
+          <button class="btn outline" id="btn-logout">Cerrar sesión</button>
+        </div>
+      </div>
+      <p class="muted">Estado de acceso: <strong id="paid-state">Requiere pago</strong></p>
 
-  <!-- Contenido del Curso -->
-  <div class="container hidden" id="course-section">
-    <h2>Bienvenido al Curso Completo 🎓</h2>
-    <p>Aprende a reparar y armar computadoras paso a paso con Academia Tech Z.</p>
+      <div id="locked" class="grid">
+        <p>Para desbloquear el curso, realizá un único pago de <strong>$13.000 ARS</strong>.</p>
+        <button class="btn" id="btn-pagar">Pagar $13.000 con Mercado Pago</button>
+        <small class="muted">Tras el pago se habilita automáticamente tu cuenta.</small>
+      </div>
 
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Inside_of_a_computer.jpg/640px-Inside_of_a_computer.jpg" alt="Reparación de PC">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Computer_motherboard.jpg/640px-Computer_motherboard.jpg" alt="Motherboard">
+      <div id="unlocked" class="hidden">
+        <h3>Contenido</h3>
+        <div class="gallery">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Inside_of_a_computer.jpg/640px-Inside_of_a_computer.jpg" alt="PC interior" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Computer_motherboard.jpg/640px-Computer_motherboard.jpg" alt="Motherboard" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Computer_Repair.jpg/640px-Computer_Repair.jpg" alt="Reparación" />
+        </div>
+        <h3>Contacto</h3>
+        <p>¿Dudas? Escribinos por <a href="https://wa.me/541162717977" target="_blank">WhatsApp 11-6271-7977</a>.</p>
+        <p>
+          También podés descargar materiales:
+          <a href="#" id="drive-link">Descargar (Drive)</a>
+        </p>
+      </div>
+    </section>
+  </main>
 
-    <h3>Accede al curso por una única inversión de <strong>$13.000 ARS</strong></h3>
-    <a href="https://mpago.la/11UKhhh" target="_blank">
-      <button>Pagar con Mercado Pago</button>
-    </a>
+  <footer>
+    © <span id="y"></span> Academia Tech Z
+  </footer>
 
-    <h3>Contacto</h3>
-    <p>¿Tienes dudas? Escríbenos por WhatsApp:</p>
-    <a href="https://wa.me/541162717977" target="_blank">📱 11-6826-1164</a>
-  </div>
-
+  <!-- Supabase JS (Auth) -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
-    function register() {
-      const user = document.getElementById("registerUser").value;
-      const pass = document.getElementById("registerPass").value;
-      if(user && pass){
-        localStorage.setItem(user, pass);
-        alert("Usuario registrado correctamente. Ahora inicia sesión.");
-      } else {
-        alert("Por favor completa usuario y contraseña.");
+    // ======= CONFIGURACIÓN (reemplazar por tus valores) =======
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";               // p.ej. https://abcd.supabase.co
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";     // anon key pública
+    const API_BASE = "YOUR_VERCEL_DEPLOY_URL";              // p.ej. https://tu-app.vercel.app (sin slash final)
+
+    const mpMonto = 13000; // ARS
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const el = (id)=>document.getElementById(id);
+    const show = (node)=>node.classList.remove('hidden');
+    const hide = (node)=>node.classList.add('hidden');
+
+    // Año footer
+    el('y').textContent = new Date().getFullYear();
+
+    // Estado de sesión al cargar
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        onLogged(session.user);
       }
+    });
+
+    // Registro
+    el('btn-register').addEventListener('click', async () => {
+      const email = el('reg-email').value.trim();
+      const pass  = el('reg-pass').value.trim();
+      if (!email || pass.length < 6) { el('auth-msg').textContent = 'Completá email y contraseña (mínimo 6).'; return; }
+      const { error } = await supabase.auth.signUp({ email, password: pass });
+      el('auth-msg').textContent = error ? error.message : 'Registrado. Ahora iniciá sesión.';
+    });
+
+    // Login
+    el('btn-login').addEventListener('click', async () => {
+      const email = el('login-email').value.trim();
+      const pass  = el('login-pass').value.trim();
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      if (error) { el('auth-msg').textContent = error.message; return; }
+      onLogged(data.user);
+    });
+
+    // Logout
+    el('btn-logout')?.addEventListener('click', async ()=>{
+      await supabase.auth.signOut();
+      location.reload();
+    });
+
+    async function onLogged(user){
+      hide(el('auth-card')); hide(el('preview'));
+      show(el('course'));
+      await refreshAccess(user);
     }
 
-    function login() {
-      const user = document.getElementById("loginUser").value;
-      const pass = document.getElementById("loginPass").value;
-      const storedPass = localStorage.getItem(user);
-
-      if(storedPass && storedPass === pass){
-        document.getElementById("login-section").classList.add("hidden");
-        document.getElementById("preview").classList.add("hidden");
-        document.getElementById("course-section").classList.remove("hidden");
-      } else {
-        alert("Usuario o contraseña incorrectos.");
-      }
+    async function refreshAccess(user){
+      const { data: { user: fresh } } = await supabase.auth.getUser();
+      const paid = !!(fresh && fresh.user_metadata && fresh.user_metadata.paid);
+      el('paid-state').textContent = paid ? 'Acceso habilitado' : 'Requiere pago';
+      if (paid){ hide(el('locked')); show(el('unlocked')); }
+      else { show(el('locked')); hide(el('unlocked')); }
     }
+
+    // Pagar con Mercado Pago (creamos preferencia en backend)
+    el('btn-pagar')?.addEventListener('click', async ()=>{
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { alert('Iniciá sesión para pagar.'); return; }
+      try {
+        const res = await fetch(`${API_BASE}/api/create-preference`, {
+          method:'POST', headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ amount: mpMonto, email: user.email, user_id: user.id })
+        });
+        const json = await res.json();
+        if (json.init_point){
+          window.location.href = json.init_point; // redirige al checkout de MP
+        } else { alert('No se pudo iniciar el pago.'); }
+      } catch(e){ alert('Error conectando con el servidor.'); }
+    });
   </script>
 </body>
 </html>
 
+
+<!-- ========================= /api/create-preference.js ========================= -->
+<script type="text/plain" data-filename="api/create-preference.js">
+import mercadopago from "mercadopago";
+
+export default async function handler(req, res){
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const { amount, email, user_id } = req.body || {};
+  if (!amount || !email || !user_id) return res.status(400).json({ error:'Missing fields' });
+
+  try {
+    mercadopago.configure({ access_token: process.env.MP_ACCESS_TOKEN });
+
+    const preference = {
+      items: [{ title: 'Curso Academia Tech Z', quantity: 1, unit_price: Number(amount) }],
+      payer: { email },
+      metadata: { user_id },
+      external_reference: user_id,
+      back_urls: {
+        success: req.headers.origin || 'https://example.com',
+        failure: req.headers.origin || 'https://example.com',
+        pending: req.headers.origin || 'https://example.com'
+      },
+      auto_return: 'approved',
+      notification_url: `${req.headers.origin?.replace('http://','https://') || 'https://yourapp.vercel.app'}/api/mp-webhook`
+    };
+
+    const response = await mercadopago.preferences.create(preference);
+    return res.status(200).json({ init_point: response.body.init_point });
+  } catch (e){
+    console.error(e);
+    return res.status(500).json({ error: 'MP error' });
+  }
+}
+</script>
+
+
+<!-- ========================= /api/mp-webhook.js ========================= -->
+<script type="text/plain" data-filename="api/mp-webhook.js">
+import mercadopago from 'mercadopago';
+import fetch from 'node-fetch';
+
+// Actualiza user_metadata.paid = true en Supabase usando Service Role
+async function markPaidInSupabase(user_id){
+  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users/${user_id}`;
+  const body = { user_metadata: { paid: true } };
+  const resp = await fetch(url, {
+    method:'PUT',
+    headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok){
+    const t = await resp.text();
+    throw new Error(`Supabase update failed: ${resp.status} ${t}`);
+  }
+}
+
+export default async function handler(req, res){
+  // MP envía distintos tipos: payment, merchant_order, etc.
+  try {
+    const type = req.query.type || req.body?.type || req.query.topic; // topic en algunos casos
+    if (!type) return res.status(200).send('ok');
+
+    mercadopago.configure({ access_token: process.env.MP_ACCESS_TOKEN });
+
+    if (type === 'payment'){
+      const paymentId = req.query['data.id'] || req.body?.data?.id;
+      if (!paymentId) return res.status(200).send('no payment id');
+
+      const payment = await mercadopago.payment.findById(paymentId);
+      const status = payment.body.status; // approved, pending, rejected
+      const user_id = payment.body.metadata?.user_id || payment.body.external_reference;
+
+      if (status === 'approved' && user_id){
+        await markPaidInSupabase(user_id);
+      }
+    }
+
+    return res.status(200).send('ok');
+  } catch (e){
+    console.error('Webhook error', e);
+    return res.status(200).send('ok'); // responder 200 para que MP no reintente eternamente
+  }
+}
+</script>
